@@ -1,46 +1,45 @@
-import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from "react";
 
 function AdminMenu() {
   const [menuItems, setMenuItems] = useState([]);
   const [show, setShow] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
-  const token = localStorage.getItem("token");
 
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     price: "",
     category: "Main Courses",
-    image: null,
+    image: null
   });
 
-  // 📌 جلب المنيو
-  const fetchMenu = async () => {
-    const res = await fetch(
-      "https://web2-with-backend.onrender.com/api/admin/menu",
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    const data = await res.json();
-    if (data.success) setMenuItems(data.items);
-  };
+  // 🔥 خليه جاهز للتعديل إذا غيرت السيرفر
+  const API = "https://web2-with-backend.onrender.com";
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     fetchMenu();
   }, []);
 
-  // 📌 إرسال البيانات (إضافة/تعديل)
-  const handleSubmit = async (e) => {
+  const fetchMenu = async () => {
+    const res = await fetch(`${API}/api/admin/menu`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (data.success) setMenuItems(data.items);
+  };
+
+  const submit = async (e) => {
     e.preventDefault();
 
     const data = new FormData();
-    Object.keys(formData).forEach((field) => {
-      if (formData[field]) data.append(field, formData[field]);
+    Object.keys(formData).forEach((k) => {
+      if (formData[k]) data.append(k, formData[k]);
     });
 
     const url = editingItem
-      ? `https://web2-with-backend.onrender.com/api/admin/menu/${editingItem.id}`
-      : "https://web2-with-backend.onrender.com/api/admin/menu";
+      ? `${API}/api/admin/menu/${editingItem.id}`
+      : `${API}/api/admin/menu`;
 
     const method = editingItem ? "PUT" : "POST";
 
@@ -56,71 +55,68 @@ function AdminMenu() {
     fetchMenu();
   };
 
-  // ❌ حذف عنصر
-  const removeItem = async (id) => {
-    if (!window.confirm("Are you sure?")) return;
+  const remove = async (id) => {
+    if (!window.confirm("Delete item?")) return;
 
-    await fetch(
-      `https://web2-with-backend.onrender.com/api/admin/menu/${id}`,
-      {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` }
-      }
-    );
+    await fetch(`${API}/api/admin/menu/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
     fetchMenu();
   };
 
   return (
-    <div className="container py-4">
-      <h2 className="mb-4">🍽️ Admin Menu Panel</h2>
+    <div className="container mt-4">
+      <h2 className="mb-4 fw-bold text-center">🍽️ Admin Menu Panel</h2>
 
-      <button className="btn btn-success mb-3" onClick={() => setShow(true)}>
-        ➕ Add New Menu Item
-      </button>
+      <div className="text-end mb-3">
+        <button className="btn btn-success" onClick={() => setShow(true)}>
+          ➕ Add New Menu Item
+        </button>
+      </div>
 
-      <table className="table table-bordered table-striped text-center">
+      <table className="table table-striped text-center align-middle">
         <thead className="table-dark">
           <tr>
             <th>Image</th>
             <th>Name</th>
             <th>Price</th>
             <th>Category</th>
-            <th>Actions</th>
+            <th width="180px">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {menuItems.map((item) => (
-            <tr key={item.id}>
+          {menuItems.map((i) => (
+            <tr key={i.id}>
               <td>
                 <img
-                  src={
-                    item.image
-                      ? `https://web2-with-backend.onrender.com${item.image}`
-                      : "https://via.placeholder.com/50"
-                  }
-                  width="60"
-                  height="60"
-                  className="rounded"
-                  style={{ objectFit: "cover" }}
+                  src={i.image?.startsWith("http")
+                    ? i.image
+                    : `${API}${i.image}`}
+                  width="70"
+                  height="70"
+                  style={{ objectFit: "cover", borderRadius: "8px" }}
+                  alt=""
                 />
               </td>
-              <td>{item.name}</td>
-              <td>${item.price}</td>
-              <td>{item.category}</td>
+              <td>{i.name}</td>
+              <td>${i.price}</td>
+              <td>{i.category}</td>
               <td>
                 <button
                   className="btn btn-warning btn-sm me-2"
                   onClick={() => {
-                    setEditingItem(item);
-                    setFormData(item);
+                    setEditingItem(i);
                     setShow(true);
+                    setFormData(i);
                   }}
                 >
                   ✏️ Edit
                 </button>
                 <button
                   className="btn btn-danger btn-sm"
-                  onClick={() => removeItem(item.id)}
+                  onClick={() => remove(i.id)}
                 >
                   🗑️ Delete
                 </button>
@@ -130,70 +126,60 @@ function AdminMenu() {
         </tbody>
       </table>
 
-      {/* 📌 Modal/Form */}
       {show && (
-        <div className="card p-4 shadow-lg mt-4">
-          <h4>{editingItem ? "✏️ Edit Item" : "➕ Add Item"}</h4>
+        <div className="card p-4 mt-4">
+          <h4 className="mb-3">{editingItem ? "✏️ Edit Item" : "➕ Add Item"}</h4>
 
-          <form className="mt-3" onSubmit={handleSubmit}>
+          <form onSubmit={submit}>
             <input
               className="form-control mb-2"
               placeholder="Name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              value={formData.name || ""}
+              onChange={(e)=>setFormData({...formData,name:e.target.value})}
               required
             />
 
             <textarea
               className="form-control mb-2"
               placeholder="Description"
-              value={formData.description}
-              onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
-              }
+              value={formData.description || ""}
+              onChange={(e)=>setFormData({...formData,description:e.target.value})}
               required
             />
 
             <input
+              className="form-control mb-2"
               type="number"
               step="0.01"
-              className="form-control mb-2"
               placeholder="Price"
-              value={formData.price}
-              onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+              value={formData.price || ""}
+              onChange={(e)=>setFormData({...formData,price:e.target.value})}
               required
             />
 
             <select
-              className="form-control mb-2"
+              className="form-select mb-2"
               value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              onChange={(e)=>setFormData({...formData,category:e.target.value})}
             >
               <option>Main Courses</option>
               <option>Pizza</option>
-              <option>Pasta</option>
-              <option>Drinks</option>
-              <option>Dessert</option>
+              <option>Desserts</option>
+              <option>Appetizers</option>
+              <option>Beverages</option>
             </select>
 
             <input
               type="file"
               className="form-control mb-3"
+              onChange={(e)=>setFormData({...formData,image:e.target.files[0]})}
               accept="image/*"
-              onChange={(e) => setFormData({ ...formData, image: e.target.files[0] })}
             />
 
-            <button className="btn btn-primary w-100">💾 Save</button>
-            <button
-              type="button"
-              className="btn btn-secondary w-100 mt-2"
-              onClick={() => {
-                setShow(false);
-                setEditingItem(null);
-              }}
-            >
-              ❌ Cancel
+            <button className="btn btn-primary w-100 mb-2">
+              💾 {editingItem ? "Update" : "Save"}
             </button>
+            <button className="btn btn-secondary w-100" onClick={()=>setShow(false)}>❌ Cancel</button>
           </form>
         </div>
       )}
