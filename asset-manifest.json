@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/Web2-With-frontend/static/css/main.3fb9cfd6.css",
+    "main.js": "/Web2-With-frontend/static/js/main.82802079.js",
+    "static/js/496.4882198f.chunk.js": "/Web2-With-frontend/static/js/496.4882198f.chunk.js",
+    "static/media/bootstrap-icons.woff?": "/Web2-With-frontend/static/media/bootstrap-icons.1295669cd4e305c97f2c.woff",
+    "static/media/Restaurent.jpeg": "/Web2-With-frontend/static/media/Restaurent.4b68294d02bba3ae627a.jpeg",
+    "static/media/bootstrap-icons.woff2?": "/Web2-With-frontend/static/media/bootstrap-icons.92ea18a81d737146ff04.woff2",
+    "index.html": "/Web2-With-frontend/index.html",
+    "main.3fb9cfd6.css.map": "/Web2-With-frontend/static/css/main.3fb9cfd6.css.map",
+    "main.82802079.js.map": "/Web2-With-frontend/static/js/main.82802079.js.map",
+    "496.4882198f.chunk.js.map": "/Web2-With-frontend/static/js/496.4882198f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3fb9cfd6.css",
+    "static/js/main.82802079.js"
+  ]
+}
