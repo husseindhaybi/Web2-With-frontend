@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Restaurant Ordering System - Full Stack Project",
   "private": true,
-  "homepage": "https://husseindhaybi.github.io/Web2-With-frontend",
-  "proxy": "http://localhost:5000",
+  "homepage": "https://husseindhaybi.github.io/Web2-With-frontend/",
+  "proxy": "https://web2-with-backend.onrender.com",
   "dependencies": {
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
@@ -20,11 +20,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
-    "server": "cd backend && npm start",
-    "dev": "concurrently \"npm start\" \"npm run server\""
-    
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -44,7 +42,6 @@
     ]
   },
   "devDependencies": {
-    "concurrently": "^8.2.2",
     "gh-pages": "^6.0.0"
   }
 }
